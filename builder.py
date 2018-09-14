@@ -18,6 +18,23 @@ FILES = {
     '{project_slug}/templates/index.html': 'index.html.template'
 }
 
+
+def flask_template_prepare(string):
+    string = re.sub(r'\{\%', '<%', string)
+    string = re.sub(r'\%\}', '%>', string)
+    string = re.sub(r'\{\{', '<<', string)
+    string = re.sub(r'\}\}', '>>', string)
+    return string
+
+
+def flask_template_repair(string):
+    string = re.sub(r'\<\%', '{%', string)
+    string = re.sub(r'\%\>', '%}', string)
+    string = re.sub(r'\<\<', '{{', string)
+    string = re.sub(r'\>\>', '\}', string)
+    return string
+
+
 def slugify(string):
     string = unicodedata.normalize('NFKC', string)
     string = re.sub(r'[^\w\s]', '', string).strip().lower()
@@ -91,6 +108,7 @@ def main():
     project_slug = slugify(project_name)
 
     create_dirs(project_root, project_slug)
+    create_files(project_root, project_slug, project_name)
 
     print("Creating {} in {}".format(project_name, project_root))
 
